@@ -117,6 +117,11 @@ export default function Orders() {
     history.push('/newOrder');
   }
 
+  // View Order functions
+  function handleClickBackground() {
+    setViewOrder(false);
+  }
+
   return (
     <>
       <header>
@@ -217,7 +222,12 @@ export default function Orders() {
           Next
         </button>
       </Pagination>
-      {viewOrder ? <ViewOrder order={selectedOrder} /> : null}
+      {viewOrder ? (
+        <ViewOrder
+          order={selectedOrder}
+          handleClickBackground={handleClickBackground}
+        />
+      ) : null}
     </>
   );
 }
