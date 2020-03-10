@@ -17,7 +17,7 @@ export default function Header() {
       <Content>
         <nav>
           <img src={logo} alt="FastFeet" />
-          <StyledLink to="/deliveries">DELIVERIES</StyledLink>
+          <StyledLink to="/orders">ORDERS</StyledLink>
           <StyledLink to="/couriers">COURIERS</StyledLink>
           <StyledLink to="/recipients">RECIPIENTS</StyledLink>
           <StyledLink to="/deliveryProblems">PROBLEMS</StyledLink>

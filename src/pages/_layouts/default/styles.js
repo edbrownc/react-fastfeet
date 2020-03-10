@@ -4,7 +4,7 @@ import { MenuItem } from '@material-ui/core';
 import { MdVisibility, MdEdit, MdDelete } from 'react-icons/md';
 
 export const Wrapper = styled.div`
-  height: 100%;
+  min-height: 100%;
   background: #f5f5f5;
 `;
 

@@ -4,6 +4,7 @@ import { NavLink } from 'react-router-dom';
 export const Container = styled.div`
   background: #fff;
   padding: 0 30px;
+  box-shadow: 0px 1px 1px #dddddd;
 `;
 
 export const Content = styled.div`

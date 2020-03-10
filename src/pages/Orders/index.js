@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import IconButton from '@material-ui/core/IconButton';
 import { MdMoreHoriz } from 'react-icons/md';
-
 import { Divider, Menu } from '@material-ui/core';
+import history from '~/services/history';
 import {
   StyledAsyncSelect,
   SelectContainer,
@@ -14,51 +14,46 @@ import {
   StyledAvatar,
 } from '~/pages/_layouts/default/styles';
 import api from '~/services/api';
+import ViewOrder from './ViewOrder';
 
-export default function Deliveries() {
+export default function Orders() {
   const [inputValue, setInputValue] = useState('');
   const [selectedOption, setSelectedOption] = useState('');
-  const [deliveries, setDeliveries] = useState([]);
+  const [orders, setOrdersState] = useState([]);
   const [anchorActions, setAnchorActions] = useState(null);
   const [page, setPage] = useState(1);
   const open = Boolean(anchorActions);
+  const [selectedOrder, setSelectedOrder] = useState('');
+  const [viewOrder, setViewOrder] = useState(false);
 
-  // Load all deliveries first time loading the page
+  // Load all orders first time loading the page
   useEffect(() => {
-    async function loadDeliveries() {
-      const orders = await api.get('/orders');
+    async function loadOrders() {
+      const res = await api.get('/orders');
 
-      setDeliveries(orders.data);
+      setOrdersState(res.data);
     }
 
-    loadDeliveries();
+    loadOrders();
   }, []);
-
-  async function setOrders(product) {
-    const orders = await api.get('/orders', { params: { page, product } });
-
-    setDeliveries(orders.data);
-  }
 
   // Select functions
   function loadOptions(input, callback) {
     setTimeout(() => {
-      api
-        .get('/orders', { params: { page, product: inputValue } })
-        .then(res => {
-          // Gets distinct products into new array
-          const distinctProducts = Array.from(
-            new Set(res.data.map(order => order.product))
-          );
+      api.get('/orders', { params: { product: input } }).then(res => {
+        // Gets distinct products into new array
+        const distinctProducts = Array.from(
+          new Set(res.data.map(order => order.product))
+        );
 
-          // Turns array into options for the dropdown menu
-          const options = distinctProducts.map(product => ({
-            label: `${product}`,
-            value: `${product}`,
-          }));
+        // Turns array into options for the dropdown menu
+        const options = distinctProducts.map(product => ({
+          label: `${product}`,
+          value: `${product}`,
+        }));
 
-          callback(options);
-        });
+        callback(options);
+      });
     }, 1000);
   }
 
@@ -70,51 +65,75 @@ export default function Deliveries() {
     return input;
   }
 
-  async function handleSelectChange(option) {
+  function handleSelectChange(option) {
     setSelectedOption(option);
+    setPage(1);
     setInputValue(option.value);
-
-    setOrders(option.value);
   }
 
   // Actions menu functions
-  function handleClickActions(event) {
+  function handleClickActions(event, order) {
     setAnchorActions(event.currentTarget);
+    setSelectedOrder(order);
   }
 
   function handleCloseActions() {
     setAnchorActions(null);
   }
-  useEffect(() => {
-    setOrders(inputValue);
-  }, [inputValue, page, setOrders]);
+
+  async function handleDeleteOrder() {
+    setAnchorActions(null);
+
+    await api.delete(`/orders/${selectedOrder.id}`);
+
+    const orderDeletedArray = orders.filter(order => order !== selectedOrder);
+    setOrdersState(orderDeletedArray);
+  }
+
+  function handleViewOrder() {
+    setAnchorActions(null);
+    setViewOrder(true);
+  }
 
   // Pagination functions
+  useEffect(() => {
+    async function updateOrdersPage() {
+      const res = await api.get('/orders', {
+        params: { page, product: inputValue },
+      });
+
+      setOrdersState(res.data);
+    }
+
+    updateOrdersPage();
+  }, [inputValue, page]);
+
   function handlePagination(action) {
     setPage(action === 'next' ? page + 1 : page - 1);
   }
 
-  // New Delivery function
-  function handleNewDelivery() {}
+  // New Order function
+  function handleNewOrder() {
+    history.push('/newOrder');
+  }
 
   return (
     <>
       <header>
-        <strong>Delivery management</strong>
+        <strong>Order management</strong>
       </header>
 
       <SelectContainer>
         <StyledAsyncSelect
           cacheOptions
-          defaultOptions
           loadOptions={loadOptions}
           onInputChange={handleInputChange}
           onChange={handleSelectChange}
-          placeholder="Search by product"
           value={selectedOption}
+          placeholder="Search by product"
         />
-        <button type="button" onClick={handleNewDelivery}>
-          NEW DELIVERY
+        <button type="button" onClick={handleNewOrder}>
+          NEW ORDER
         </button>
       </SelectContainer>
 
@@ -131,25 +150,25 @@ export default function Deliveries() {
           </tr>
         </thead>
         <tbody>
-          {deliveries.map(delivery => (
-            <tr>
-              <td>#{delivery.id}</td>
-              <td>{delivery.recipient.name}</td>
+          {orders.map(order => (
+            <tr key={order.id}>
+              <td>#{order.id}</td>
+              <td>{order.recipient.name}</td>
               <td>
                 <div>
                   <StyledAvatar>EB</StyledAvatar>
-                  <span>{delivery.courier.name}</span>
+                  <span>{order.courier.name}</span>
                 </div>
               </td>
-              <td>{delivery.recipient.city}</td>
-              <td>{delivery.recipient.state}</td>
-              <td>{delivery.status}</td>
+              <td>{order.recipient.city}</td>
+              <td>{order.recipient.state}</td>
+              <td>{order.status}</td>
               <td>
                 <IconButton
                   aria-label="more"
                   aria-controls="long-menu"
                   aria-haspopup="true"
-                  onClick={handleClickActions}
+                  onClick={e => handleClickActions(e, order)}
                 >
                   <MdMoreHoriz />
                 </IconButton>
@@ -166,15 +185,15 @@ export default function Deliveries() {
             anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
             transformOrigin={{ vertical: 'top', horizontal: 'center' }}
           >
-            <StyledMenuItem key="view" onClick={handleCloseActions}>
+            <StyledMenuItem key="view" onClick={handleViewOrder}>
               <PurpleViewIcon /> <span>View</span>
             </StyledMenuItem>
             <Divider variant="middle" />
-            <StyledMenuItem key="view" onClick={handleCloseActions}>
+            <StyledMenuItem key="edit" onClick={handleCloseActions}>
               <BlueEditIcon /> <span>Edit</span>
             </StyledMenuItem>
             <Divider variant="middle" />
-            <StyledMenuItem key="view" onClick={handleCloseActions}>
+            <StyledMenuItem key="delete" onClick={handleDeleteOrder}>
               <RedDeleteIcon /> <span>Delete</span>
             </StyledMenuItem>
           </Menu>
@@ -193,11 +212,12 @@ export default function Deliveries() {
         <button
           type="button"
           onClick={() => handlePagination('next')}
-          disabled={deliveries.length < 20}
+          disabled={orders.length < 20}
         >
           Next
         </button>
       </Pagination>
+      {viewOrder ? <ViewOrder order={selectedOrder} /> : null}
     </>
   );
 }

@@ -22,7 +22,7 @@ export function* signIn({ payload }) {
 
     yield put(signInSuccess(token, user));
 
-    history.push('/deliveries');
+    history.push('/orders');
   } catch (error) {
     toast.error('Authentication failed, please check your credentials');
 
