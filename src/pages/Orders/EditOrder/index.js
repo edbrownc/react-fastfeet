@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { MdDone, MdKeyboardArrowLeft } from 'react-icons/md';
 // import { Container } from './styles';
 import AsyncSelect from 'react-select/async';
@@ -13,7 +14,7 @@ import {
 } from '~/pages/_layouts/registration/styles';
 import api from '~/services/api';
 
-export default function NewOrder() {
+export default function NewOrder({ location }) {
   const [recInputValue, setRecInputValue] = useState('');
   const [courierInputValue, setCourierInputValue] = useState('');
 
@@ -21,6 +22,35 @@ export default function NewOrder() {
   const [courierSelectedOption, setCourierSelectedOption] = useState('');
 
   const [productInput, setProductInput] = useState('');
+  const [orderId, setOrderId] = useState(null);
+
+  useEffect(() => {
+    function loadInfo() {
+      if (location.state) {
+        const { order } = location.state;
+
+        const courierOption = {
+          label: `${order.courier.name}`,
+          value: `${order.courier.id}`,
+        };
+
+        setCourierSelectedOption(courierOption);
+
+        const recipientOption = {
+          label: `${order.recipient.name}`,
+          value: `${order.recipient.id}`,
+        };
+
+        setRecSelectedOption(recipientOption);
+
+        setProductInput(order.product);
+
+        setOrderId(order.id);
+      }
+    }
+
+    loadInfo();
+  }, [location]);
 
   // Recipient select functions
   function loadRecipientOptions(input, callback) {
@@ -31,8 +61,6 @@ export default function NewOrder() {
           label: `${recipient.name}`,
           value: `${recipient.id}`,
         }));
-
-        console.tron.log(res.data);
 
         callback(options);
       });
@@ -49,7 +77,7 @@ export default function NewOrder() {
 
   async function handleRecSelectChange(option) {
     setRecSelectedOption(option);
-    setRecInputValue(option.value);
+    setRecInputValue(option.label);
   }
 
   // Courier select functions
@@ -63,8 +91,6 @@ export default function NewOrder() {
             label: `${courier.name}`,
             value: `${courier.id}`,
           }));
-
-          console.tron.log(res.data);
 
           callback(options);
         });
@@ -81,7 +107,7 @@ export default function NewOrder() {
 
   async function handleCourierSelectChange(option) {
     setCourierSelectedOption(option);
-    setCourierInputValue(option.value);
+    setCourierInputValue(option.label);
   }
 
   function handleProdInputChange(e) {
@@ -108,16 +134,28 @@ export default function NewOrder() {
       return;
     }
 
-    await api
-      .post('/orders', {
-        recipient_id: recipientId,
-        courier_id: courierId,
-        product,
-      })
-      .then(() => {
-        toast.success('Order created.');
-        history.push('/orders');
-      });
+    // If it has order ID then it is an edit else it is new order
+    if (orderId) {
+      await api
+        .put(`/orders/${orderId}`, {
+          product,
+        })
+        .then(() => {
+          toast.success('Order updated.');
+          history.push('/orders');
+        });
+    } else {
+      await api
+        .post('/orders', {
+          recipient_id: recipientId,
+          courier_id: courierId,
+          product,
+        })
+        .then(() => {
+          toast.success('Order created.');
+          history.push('/orders');
+        });
+    }
   }
 
   function handleBackBtn() {
@@ -171,6 +209,7 @@ export default function NewOrder() {
             id="product"
             name="product"
             placeholder="Product"
+            value={productInput}
             onChange={handleProdInputChange}
           />
         </div>
@@ -178,3 +217,7 @@ export default function NewOrder() {
     </Container>
   );
 }
+
+NewOrder.propTypes = {
+  location: PropTypes.string.isRequired,
+};

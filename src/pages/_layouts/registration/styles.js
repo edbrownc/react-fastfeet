@@ -57,7 +57,7 @@ export const RegContainer = styled.div`
     border-radius: 4px;
     height: 40px;
     padding-left: 10px;
-    color: #999;
+    color: #444;
   }
 
   *:nth-child(4n-1):nth-last-of-type(1) {

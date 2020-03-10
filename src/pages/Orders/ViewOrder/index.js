@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 
 import { utcToZonedTime, format } from 'date-fns-tz';
 import {
@@ -13,7 +14,7 @@ export default function ViewOrder({ order, handleClickBackground }) {
   const [pickupDate, setPickupDate] = useState(null);
   const [deliveredDate, setDeliveredDate] = useState(null);
 
-  const { street, number, complement, city, state, zip } = order.recipient;
+  const { street, number, city, state, zip } = order.recipient;
 
   const { start_date, end_date, signature } = order;
 
@@ -90,3 +91,8 @@ export default function ViewOrder({ order, handleClickBackground }) {
     </Background>
   );
 }
+
+ViewOrder.propTypes = {
+  order: PropTypes.string.isRequired,
+  handleClickBackground: PropTypes.func.isRequired,
+};

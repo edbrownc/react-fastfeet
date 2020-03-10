@@ -84,15 +84,25 @@ export default function Orders() {
   async function handleDeleteOrder() {
     setAnchorActions(null);
 
-    await api.delete(`/orders/${selectedOrder.id}`);
+    const res = window.confirm('Are you sure you want to delete this order?');
 
-    const orderDeletedArray = orders.filter(order => order !== selectedOrder);
-    setOrdersState(orderDeletedArray);
+    if (res === true) {
+      await api.delete(`/orders/${selectedOrder.id}`);
+
+      const orderDeletedArray = orders.filter(order => order !== selectedOrder);
+      setOrdersState(orderDeletedArray);
+    }
   }
 
   function handleViewOrder() {
     setAnchorActions(null);
     setViewOrder(true);
+  }
+
+  function handleEditOrder() {
+    setAnchorActions(null);
+
+    history.push('/newOrder', { order: selectedOrder });
   }
 
   // Pagination functions
@@ -194,7 +204,7 @@ export default function Orders() {
               <PurpleViewIcon /> <span>View</span>
             </StyledMenuItem>
             <Divider variant="middle" />
-            <StyledMenuItem key="edit" onClick={handleCloseActions}>
+            <StyledMenuItem key="edit" onClick={handleEditOrder}>
               <BlueEditIcon /> <span>Edit</span>
             </StyledMenuItem>
             <Divider variant="middle" />
