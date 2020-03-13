@@ -8,6 +8,7 @@ import DeliveryProblems from '~/pages/DeliveryProblems';
 import Recipients from '~/pages/Recipients';
 import Route from './Route';
 import EditOrder from '~/pages/Orders/EditOrder';
+import EditCourier from '~/pages/Couriers/EditCourier';
 
 export default function Routes() {
   return (
@@ -17,7 +18,8 @@ export default function Routes() {
       <Route path="/couriers" component={Couriers} isPrivate />
       <Route path="/recipients" component={Recipients} isPrivate />
       <Route path="/deliveryproblems" component={DeliveryProblems} isPrivate />
-      <Route path="/neworder" component={EditOrder} isPrivate />
+      <Route path="/editorder" component={EditOrder} isPrivate />
+      <Route path="/editcourier" component={EditCourier} isPrivate />
     </Switch>
   );
 }

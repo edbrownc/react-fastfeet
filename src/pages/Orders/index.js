@@ -19,19 +19,19 @@ import ViewOrder from './ViewOrder';
 export default function Orders() {
   const [inputValue, setInputValue] = useState('');
   const [selectedOption, setSelectedOption] = useState('');
-  const [orders, setOrdersState] = useState([]);
+  const [orders, setOrders] = useState([]);
   const [anchorActions, setAnchorActions] = useState(null);
   const [page, setPage] = useState(1);
-  const open = Boolean(anchorActions);
   const [selectedOrder, setSelectedOrder] = useState('');
   const [viewOrder, setViewOrder] = useState(false);
+  const open = Boolean(anchorActions);
 
   // Load all orders first time loading the page
   useEffect(() => {
     async function loadOrders() {
       const res = await api.get('/orders');
 
-      setOrdersState(res.data);
+      setOrders(res.data);
     }
 
     loadOrders();
@@ -57,12 +57,12 @@ export default function Orders() {
     }, 1000);
   }
 
-  function handleInputChange(newValue) {
-    const input = newValue.replace(/\W/g, ' ');
+  function handleInputChange(newValue, params) {
+    if (params.action === 'input-change') {
+      const input = newValue.replace(/\W/g, ' ');
 
-    setInputValue(input);
-
-    return input;
+      setInputValue(input);
+    }
   }
 
   function handleSelectChange(option) {
@@ -90,7 +90,7 @@ export default function Orders() {
       await api.delete(`/orders/${selectedOrder.id}`);
 
       const orderDeletedArray = orders.filter(order => order !== selectedOrder);
-      setOrdersState(orderDeletedArray);
+      setOrders(orderDeletedArray);
     }
   }
 
@@ -102,7 +102,7 @@ export default function Orders() {
   function handleEditOrder() {
     setAnchorActions(null);
 
-    history.push('/newOrder', { order: selectedOrder });
+    history.push('/editorder', { order: selectedOrder });
   }
 
   // Pagination functions
@@ -112,7 +112,7 @@ export default function Orders() {
         params: { page, product: inputValue },
       });
 
-      setOrdersState(res.data);
+      setOrders(res.data);
     }
 
     updateOrdersPage();
@@ -124,7 +124,7 @@ export default function Orders() {
 
   // New Order function
   function handleNewOrder() {
-    history.push('/newOrder');
+    history.push('/editorder');
   }
 
   // View Order functions
@@ -141,6 +141,7 @@ export default function Orders() {
       <SelectContainer>
         <StyledAsyncSelect
           cacheOptions
+          defaultOptions
           loadOptions={loadOptions}
           onInputChange={handleInputChange}
           onChange={handleSelectChange}

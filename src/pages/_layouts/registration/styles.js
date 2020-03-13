@@ -64,3 +64,31 @@ export const RegContainer = styled.div`
     grid-column: span 2;
   }
 `;
+
+export const RegFormContainer = styled.div`
+  background: #fff;
+  padding: 30px;
+  border-radius: 4px;
+
+  form {
+    display: flex;
+    flex-direction: column;
+
+    label {
+      margin-bottom: 10px;
+    }
+
+    input {
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      height: 40px;
+      padding-left: 10px;
+      color: #444;
+      margin: 0 0 10px;
+
+      &::placeholder {
+        color: rgba(255, 255, 255, 0.7);
+      }
+    }
+  }
+`;

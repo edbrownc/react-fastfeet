@@ -14,7 +14,7 @@ import {
 } from '~/pages/_layouts/registration/styles';
 import api from '~/services/api';
 
-export default function NewOrder({ location }) {
+export default function EditOrder({ location }) {
   const [recInputValue, setRecInputValue] = useState('');
   const [courierInputValue, setCourierInputValue] = useState('');
 
@@ -218,6 +218,6 @@ export default function NewOrder({ location }) {
   );
 }
 
-NewOrder.propTypes = {
+EditOrder.propTypes = {
   location: PropTypes.string.isRequired,
 };

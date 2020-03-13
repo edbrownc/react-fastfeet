@@ -76,12 +76,7 @@ export default function ViewOrder({ order, handleClickBackground }) {
           <h1>Signature</h1>
           <SignatureContainer>
             {signature ? (
-              <img
-                src={signature.url}
-                width={234}
-                height={34}
-                alt="Signature"
-              />
+              <img src={signature.url} alt="Signature" />
             ) : (
               <small>No signature provided yet</small>
             )}

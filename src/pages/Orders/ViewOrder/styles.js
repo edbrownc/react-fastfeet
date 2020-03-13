@@ -62,6 +62,11 @@ export const SignatureContainer = styled.div`
   justify-content: center;
   align-items: center;
   margin: 20px;
+
+  img {
+    width: 234px;
+    height: 36px;
+  }
 `;
 
 export const DateItem = styled.div`

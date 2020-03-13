@@ -1,14 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Wrapper, Content } from './styles';
+import { Wrapper, Container } from './styles';
 import Header from '~/components/Header';
 
 export default function RegistrationLayout({ children }) {
   return (
     <Wrapper>
       <Header />
-      <Content>{children}</Content>
+      <Container>{children}</Container>
     </Wrapper>
   );
 }

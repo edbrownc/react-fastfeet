@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import IconButton from '@material-ui/core/IconButton';
 import { MdMoreHoriz } from 'react-icons/md';
-
 import { Divider, Menu } from '@material-ui/core';
+import history from '~/services/history';
 import {
   StyledAsyncSelect,
   SelectContainer,
@@ -17,27 +17,22 @@ import api from '~/services/api';
 export default function Couriers() {
   const [inputValue, setInputValue] = useState('');
   const [selectedOption, setSelectedOption] = useState('');
-  const [couriersState, setCouriersState] = useState([]);
+  const [couriers, setCouriers] = useState([]);
   const [anchorActions, setAnchorActions] = useState(null);
+  const [selectedCourier, setSelectedCourier] = useState('');
   const [page, setPage] = useState(1);
   const open = Boolean(anchorActions);
 
   // Load all Couriers first time loading the page
   useEffect(() => {
     async function loadCouriers() {
-      const couriers = await api.get('/couriers');
+      const res = await api.get('/couriers');
 
-      setCouriersState(couriers.data);
+      setCouriers(res.data);
     }
 
     loadCouriers();
   }, []);
-
-  async function setCouriers(name) {
-    const couriers = await api.get('/couriers', { params: { page, name } });
-
-    setCouriersState(couriers.data);
-  }
 
   // Select functions
   function loadOptions(input, callback) {
@@ -53,44 +48,78 @@ export default function Couriers() {
     }, 1000);
   }
 
-  function handleInputChange(newValue) {
-    const input = newValue.replace(/\W/g, ' ');
+  function handleInputChange(newValue, params) {
+    if (params.action === 'input-change') {
+      const input = newValue.replace(/\W/g, ' ');
 
-    setInputValue(input);
-
-    return input;
+      setInputValue(input);
+    }
   }
 
   async function handleSelectChange(option) {
     setSelectedOption(option);
+    setPage(1);
     setInputValue(option.value);
-    setCouriers(option.value);
   }
 
   // Actions menu functions
-  function handleClickActions(event) {
+  function handleClickActions(event, courier) {
     setAnchorActions(event.currentTarget);
+    setSelectedCourier(courier);
   }
 
   function handleCloseActions() {
     setAnchorActions(null);
   }
+
   useEffect(() => {
-    setCouriers(inputValue);
-  }, [inputValue, page, setCouriers]);
+    async function updateCouriersPage() {
+      const res = await api.get('/couriers', {
+        params: { page, name: inputValue },
+      });
+
+      setCouriers(res.data);
+    }
+
+    updateCouriersPage();
+  }, [inputValue, page]);
 
   // Pagination functions
   function handlePagination(action) {
     setPage(action === 'next' ? page + 1 : page - 1);
   }
 
-  // New Delivery function
-  function handleNewDelivery() {}
+  // New Courier function
+  function handleNewCourier() {
+    history.push('/editcourier');
+  }
+
+  // Actions menu functions
+  async function handleDeleteCourier() {
+    setAnchorActions(null);
+
+    const res = window.confirm('Are you sure you want to remove this courier?');
+
+    if (res === true) {
+      await api.delete(`/couriers/${selectedCourier.id}`);
+
+      const courierDeletedArray = couriers.filter(
+        courier => courier !== selectedCourier
+      );
+      setCouriers(courierDeletedArray);
+    }
+  }
+
+  function handleEditCourier() {
+    setAnchorActions(null);
+
+    history.push('/editcourier', { courier: selectedCourier });
+  }
 
   return (
     <>
       <header>
-        <strong>Delivery management</strong>
+        <strong>Couriers management</strong>
       </header>
 
       <SelectContainer>
@@ -100,11 +129,11 @@ export default function Couriers() {
           loadOptions={loadOptions}
           onInputChange={handleInputChange}
           onChange={handleSelectChange}
-          placeholder="Search by product"
           value={selectedOption}
+          placeholder="Search by product"
         />
-        <button type="button" onClick={handleNewDelivery}>
-          NEW DELIVERY
+        <button type="button" onClick={handleNewCourier}>
+          NEW COURIER
         </button>
       </SelectContainer>
 
@@ -119,7 +148,7 @@ export default function Couriers() {
           </tr>
         </thead>
         <tbody>
-          {couriersState.map(courier => (
+          {couriers.map(courier => (
             <tr>
               <td>#{courier.id}</td>
               <td>
@@ -132,7 +161,7 @@ export default function Couriers() {
                   aria-label="more"
                   aria-controls="long-menu"
                   aria-haspopup="true"
-                  onClick={handleClickActions}
+                  onClick={e => handleClickActions(e, courier)}
                 >
                   <MdMoreHoriz />
                 </IconButton>
@@ -149,11 +178,11 @@ export default function Couriers() {
             anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
             transformOrigin={{ vertical: 'top', horizontal: 'center' }}
           >
-            <StyledMenuItem key="view" onClick={handleCloseActions}>
+            <StyledMenuItem key="edit" onClick={handleEditCourier}>
               <BlueEditIcon /> <span>Edit</span>
             </StyledMenuItem>
             <Divider variant="middle" />
-            <StyledMenuItem key="view" onClick={handleCloseActions}>
+            <StyledMenuItem key="delete" onClick={handleDeleteCourier}>
               <RedDeleteIcon /> <span>Delete</span>
             </StyledMenuItem>
           </Menu>
@@ -172,7 +201,7 @@ export default function Couriers() {
         <button
           type="button"
           onClick={() => handlePagination('next')}
-          disabled={couriersState.length < 20}
+          disabled={couriers.length < 20}
         >
           Next
         </button>
