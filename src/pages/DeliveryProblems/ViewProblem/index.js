@@ -1,14 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
-import { utcToZonedTime, format } from 'date-fns-tz';
-import {
-  Background,
-  Container,
-  Content,
-  SignatureContainer,
-  DateItem,
-} from './styles';
+import { Background, Container, Content } from './styles';
 
 export default function ViewProblem({ problem, handleClickBackground }) {
   function handleContainerClick(event) {
