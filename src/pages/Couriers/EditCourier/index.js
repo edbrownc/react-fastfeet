@@ -1,8 +1,8 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useState, useEffect } from 'react';
+import * as Yup from 'yup';
 import PropTypes from 'prop-types';
 import { MdDone, MdKeyboardArrowLeft } from 'react-icons/md';
-
 import { toast } from 'react-toastify';
 import { Form, Input } from '@rocketseat/unform';
 import history from '~/services/history';
@@ -14,6 +14,13 @@ import {
 } from '~/pages/_layouts/registration/styles';
 import api from '~/services/api';
 import AvatarInput from './AvatarInput';
+
+const schema = Yup.object().shape({
+  name: Yup.string().required('Please enter a name.'),
+  email: Yup.string()
+    .email('Invalid email')
+    .required('Please enter an email.'),
+});
 
 export default function EditCourier({ location }) {
   const [courier, setCourier] = useState(null);
@@ -28,42 +35,39 @@ export default function EditCourier({ location }) {
     loadInfo();
   }, [location]);
 
-  async function handleSubmit(data) {
+  function handleSubmit(data) {
     const { name, email, avatar_id } = data;
 
-    if (!name) {
-      toast.error('Please enter a name.');
-      return;
-    }
-
-    if (!email) {
-      toast.error('Please enter an email.');
-      return;
-    }
-
-    if (courier) {
-      await api
-        .put(`/couriers/${courier.id}`, {
-          name,
-          email,
-          avatar_id,
-        })
-        .then(() => {
-          toast.success('Courier updated.');
-          history.push('/couriers');
-        });
-    } else {
-      await api
-        .post('/couriers', {
-          name,
-          email,
-          avatar_id,
-        })
-        .then(() => {
-          toast.success('Courier created.');
-          history.push('/couriers');
-        });
-    }
+    schema
+      .validate({ name, email })
+      .then(async () => {
+        if (courier) {
+          await api
+            .put(`/couriers/${courier.id}`, {
+              name,
+              email,
+              avatar_id,
+            })
+            .then(() => {
+              toast.success('Courier updated.');
+              history.push('/couriers');
+            });
+        } else {
+          await api
+            .post('/couriers', {
+              name,
+              email,
+              avatar_id,
+            })
+            .then(() => {
+              toast.success('Courier created.');
+              history.push('/couriers');
+            });
+        }
+      })
+      .catch(err => {
+        toast.error(err.errors[0]);
+      });
   }
 
   function handleBackBtn() {
