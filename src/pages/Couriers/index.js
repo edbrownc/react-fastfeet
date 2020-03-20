@@ -4,6 +4,7 @@ import { MdMoreHoriz } from 'react-icons/md';
 import { Divider, Menu } from '@material-ui/core';
 import history from '~/services/history';
 import {
+  StyledTable,
   StyledAsyncSelect,
   SelectContainer,
   StyledMenuItem,
@@ -137,7 +138,7 @@ export default function Couriers() {
         </button>
       </SelectContainer>
 
-      <table>
+      <StyledTable>
         <thead>
           <tr>
             <th>ID</th>
@@ -187,7 +188,7 @@ export default function Couriers() {
             </StyledMenuItem>
           </Menu>
         </tbody>
-      </table>
+      </StyledTable>
 
       <Pagination>
         <button

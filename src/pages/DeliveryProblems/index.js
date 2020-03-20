@@ -3,6 +3,7 @@ import IconButton from '@material-ui/core/IconButton';
 import { MdMoreHoriz } from 'react-icons/md';
 import { Divider, Menu } from '@material-ui/core';
 import {
+  StyledTable,
   StyledMenuItem,
   PurpleViewIcon,
   RedDeleteIcon,
@@ -86,7 +87,7 @@ export default function DeliveryProblems() {
         <strong>Delivery problems</strong>
       </header>
 
-      <table>
+      <StyledTable>
         <thead>
           <tr>
             <th>Delivery ID</th>
@@ -130,7 +131,7 @@ export default function DeliveryProblems() {
             </StyledMenuItem>
           </Menu>
         </tbody>
-      </table>
+      </StyledTable>
 
       <Pagination>
         <button

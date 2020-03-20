@@ -22,41 +22,41 @@ export const Content = styled.div`
     margin: 20px 0 20px 0;
     font-size: 20px;
   }
+`;
 
-  table {
-    border-collapse: separate;
-    border-spacing: 0 1em;
-    width: 80%;
-    text-align: left;
+export const StyledTable = styled.table`
+  border-collapse: separate;
+  border-spacing: 0 1em;
+  width: 80%;
+  text-align: left;
 
-    th:last-child {
-      text-align: right;
+  th:last-child {
+    text-align: right;
+  }
+
+  th {
+    padding-left: 20px;
+  }
+
+  tbody {
+    color: #999;
+
+    tr {
+      background: #fff;
+      height: 57px;
     }
 
-    th {
+    td {
       padding-left: 20px;
+
+      div {
+        display: flex;
+        align-items: center;
+      }
     }
 
-    tbody {
-      color: #999;
-
-      tr {
-        background: #fff;
-        height: 57px;
-      }
-
-      td {
-        padding-left: 20px;
-
-        div {
-          display: flex;
-          align-items: center;
-        }
-      }
-
-      td:last-child {
-        text-align: right;
-      }
+    td:last-child {
+      text-align: right;
     }
   }
 `;
@@ -134,4 +134,55 @@ export const StyledAvatar = styled.div`
   background-color: #f4effc;
   color: #a28fd0;
   margin-right: 10px;
+`;
+
+export const StatusBadge = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 99px;
+  height: 25px;
+  border-radius: 12px;
+  color: ${props => {
+    if (props.status === 'Pending') return '#C1BC35';
+
+    if (props.status === 'Delivered') return '#2CA42B';
+
+    if (props.status === 'Picked up') return '#4D85EE';
+
+    return '#DE3B3B';
+  }};
+  background-color: ${props => {
+    if (props.status === 'Pending') return '#F0F0DF';
+
+    if (props.status === 'Delivered') return '#DFF0DF';
+
+    if (props.status === 'Picked up') return '#BAD2FF';
+
+    return '#FAB0B0';
+  }};
+`;
+
+export const StatusCircle = styled.div`
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  text-align: center;
+  background-color: ${props => {
+    if (props.status === 'Pending') return '#C1BC35';
+
+    if (props.status === 'Delivered') return '#2CA42B';
+
+    if (props.status === 'Picked up') return '#4D85EE';
+
+    return '#DE3B3B';
+  }};
+  margin-right: 8px;
+`;
+
+export const Avatar = styled.img`
+  width: 40px;
+  height: 40px;
+  border-radius: 25px;
+  margin-right: 5px;
 `;

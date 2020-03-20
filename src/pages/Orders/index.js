@@ -11,7 +11,10 @@ import {
   BlueEditIcon,
   RedDeleteIcon,
   Pagination,
-  StyledAvatar,
+  Avatar,
+  StatusBadge,
+  StatusCircle,
+  StyledTable,
 } from '~/pages/_layouts/default/styles';
 import api from '~/services/api';
 import ViewOrder from './ViewOrder';
@@ -153,7 +156,7 @@ export default function Orders() {
         </button>
       </SelectContainer>
 
-      <table>
+      <StyledTable>
         <thead>
           <tr>
             <th>ID</th>
@@ -172,13 +175,24 @@ export default function Orders() {
               <td>{order.recipient.name}</td>
               <td>
                 <div>
-                  <StyledAvatar>EB</StyledAvatar>
+                  <Avatar
+                    src={
+                      order.courier.avatar
+                        ? order.courier.avatar.url
+                        : `https://api.adorable.io/avatar/35/${order.courier.name}`
+                    }
+                  />
                   <span>{order.courier.name}</span>
                 </div>
               </td>
               <td>{order.recipient.city}</td>
               <td>{order.recipient.state}</td>
-              <td>{order.status}</td>
+              <td>
+                <StatusBadge status={order.status}>
+                  <StatusCircle status={order.status} />
+                  {order.status}
+                </StatusBadge>
+              </td>
               <td>
                 <IconButton
                   aria-label="more"
@@ -214,7 +228,7 @@ export default function Orders() {
             </StyledMenuItem>
           </Menu>
         </tbody>
-      </table>
+      </StyledTable>
 
       <Pagination>
         <button
