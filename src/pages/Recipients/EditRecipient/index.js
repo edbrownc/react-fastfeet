@@ -3,11 +3,14 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { MdDone, MdKeyboardArrowLeft } from 'react-icons/md';
 import { toast } from 'react-toastify';
+import InputMask from 'react-input-mask';
 import history from '~/services/history';
 import {
   ButtonsContainer,
   HeaderContainer,
   Container,
+  SaveButton,
+  BackButton,
 } from '~/pages/_layouts/registration/styles';
 import api from '~/services/api';
 import { RowContainer, GridContainer } from './styles';
@@ -133,18 +136,14 @@ export default function EditRecipient({ location }) {
       <HeaderContainer>
         <strong>Recipients management</strong>
         <ButtonsContainer>
-          <button type="button" className="backBtn" onClick={handleBackBtn}>
-            <MdKeyboardArrowLeft />
+          <BackButton type="button" onClick={handleBackBtn}>
+            <MdKeyboardArrowLeft size={24} />
             BACK
-          </button>
-          <button
-            type="button"
-            className="saveBtn"
-            onClick={handleSaveRecipient}
-          >
-            <MdDone />
+          </BackButton>
+          <SaveButton type="button" onClick={handleSaveRecipient}>
+            <MdDone size={24} />
             SAVE
-          </button>
+          </SaveButton>
         </ButtonsContainer>
       </HeaderContainer>
       <GridContainer>
@@ -221,14 +220,14 @@ export default function EditRecipient({ location }) {
           </div>
           <div>
             <label htmlFor="zip">Zip</label>
-            <input
-              type="text"
-              id="zip"
+            <InputMask
               name="zip"
-              placeholder="Zip"
-              value={zip}
+              mask="*** ***"
+              value={zip || undefined}
               onChange={handleZipInputChange}
-            />
+            >
+              {() => <input name="zip" placeholder="Ex: V4J 1Z8" />}
+            </InputMask>
           </div>
         </RowContainer>
       </GridContainer>

@@ -45,6 +45,12 @@ export default function Recipients() {
             value: `${recipient.name}`,
           }));
 
+          // Add empty option
+          options.unshift({
+            label: ``,
+            value: ``,
+          });
+
           callback(options);
         });
     }, 1000);
@@ -134,7 +140,7 @@ export default function Recipients() {
           onInputChange={handleInputChange}
           onChange={handleSelectChange}
           value={selectedOption}
-          placeholder="Search by product"
+          placeholder="Search by name"
         />
         <button type="button" onClick={handleNewRecipient}>
           NEW RECIPIENT

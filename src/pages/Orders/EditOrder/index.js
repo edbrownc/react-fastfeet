@@ -11,6 +11,8 @@ import {
   HeaderContainer,
   Container,
   RegContainer,
+  BackButton,
+  SaveButton,
 } from '~/pages/_layouts/registration/styles';
 import api from '~/services/api';
 
@@ -167,14 +169,14 @@ export default function EditOrder({ location }) {
       <HeaderContainer>
         <strong>Orders management</strong>
         <ButtonsContainer>
-          <button type="button" className="backBtn" onClick={handleBackBtn}>
-            <MdKeyboardArrowLeft />
+          <BackButton type="button" onClick={handleBackBtn}>
+            <MdKeyboardArrowLeft size={24} />
             BACK
-          </button>
-          <button type="button" className="saveBtn" onClick={handleSaveOrder}>
-            <MdDone />
+          </BackButton>
+          <SaveButton type="button" onClick={handleSaveOrder}>
+            <MdDone size={24} />
             SAVE
-          </button>
+          </SaveButton>
         </ButtonsContainer>
       </HeaderContainer>
       <RegContainer>

@@ -11,7 +11,7 @@ import {
   BlueEditIcon,
   RedDeleteIcon,
   Pagination,
-  StyledAvatar,
+  Avatar,
 } from '~/pages/_layouts/default/styles';
 import api from '~/services/api';
 
@@ -43,6 +43,12 @@ export default function Couriers() {
           label: `${courier.name}`,
           value: `${courier.name}`,
         }));
+
+        // Add empty option
+        options.unshift({
+          label: ``,
+          value: ``,
+        });
 
         callback(options);
       });
@@ -131,7 +137,7 @@ export default function Couriers() {
           onInputChange={handleInputChange}
           onChange={handleSelectChange}
           value={selectedOption}
-          placeholder="Search by product"
+          placeholder="Search by name"
         />
         <button type="button" onClick={handleNewCourier}>
           NEW COURIER
@@ -153,7 +159,13 @@ export default function Couriers() {
             <tr>
               <td>#{courier.id}</td>
               <td>
-                <StyledAvatar>EB</StyledAvatar>
+                <Avatar
+                  src={
+                    courier.avatar
+                      ? courier.avatar.url
+                      : `https://api.adorable.io/avatar/35/${courier.name}`
+                  }
+                />
               </td>
               <td>{courier.name}</td>
               <td>{courier.email}</td>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import IconButton from '@material-ui/core/IconButton';
 import { MdMoreHoriz } from 'react-icons/md';
 import { Divider, Menu } from '@material-ui/core';
+import { toast } from 'react-toastify';
 import {
   StyledTable,
   StyledMenuItem,
@@ -23,7 +24,7 @@ export default function DeliveryProblems() {
   // Load all problems first time loading the page
   useEffect(() => {
     async function loadProblems() {
-      const res = await api.get('/ordersproblems');
+      const res = await api.get('/orders/issues');
 
       setProblems(res.data);
     }
@@ -47,12 +48,21 @@ export default function DeliveryProblems() {
     const res = window.confirm('Are you sure you want cancel this order?');
 
     if (res === true) {
-      await api.delete(`/orders/${selectedProblem.orderId}/cancel-delivery`);
+      try {
+        await api.delete(`/orders/${selectedProblem.order_id}/cancel-delivery`);
 
-      const problemCanceledArray = problems.filter(
-        problem => problem !== selectedProblem
-      );
-      setProblems(problemCanceledArray);
+        const problemCanceledArray = problems.filter(
+          problem => problem !== selectedProblem
+        );
+
+        setProblems(problemCanceledArray);
+
+        toast.success('Delivery canceled successfuly.');
+      } catch (error) {
+        toast.error(
+          'There was an error canceling the delivery. Please try again.'
+        );
+      }
     }
   }
 
@@ -64,7 +74,7 @@ export default function DeliveryProblems() {
   // Pagination functions
   useEffect(() => {
     async function updateProblemsPage() {
-      const res = await api.get('/ordersproblems');
+      const res = await api.get('/orders/issues');
 
       setProblems(res.data);
     }
@@ -97,8 +107,8 @@ export default function DeliveryProblems() {
         </thead>
         <tbody>
           {problems.map(problem => (
-            <tr key={problem._id}>
-              <td>#{problem.orderId}</td>
+            <tr key={problem.id}>
+              <td>#{problem.order_id}</td>
               <td>{problem.description}</td>
               <td>
                 <IconButton

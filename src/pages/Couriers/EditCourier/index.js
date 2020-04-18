@@ -11,6 +11,8 @@ import {
   HeaderContainer,
   Container,
   RegFormContainer,
+  BackButton,
+  SaveButton,
 } from '~/pages/_layouts/registration/styles';
 import api from '~/services/api';
 import AvatarInput from './AvatarInput';
@@ -79,14 +81,14 @@ export default function EditCourier({ location }) {
       <HeaderContainer>
         <strong>Couriers management</strong>
         <ButtonsContainer>
-          <button type="button" className="backBtn" onClick={handleBackBtn}>
-            <MdKeyboardArrowLeft />
+          <BackButton type="button" onClick={handleBackBtn}>
+            <MdKeyboardArrowLeft size={24} />
             BACK
-          </button>
-          <button type="submit" form="updateCourierForm" className="saveBtn">
-            <MdDone />
+          </BackButton>
+          <SaveButton type="submit" form="updateCourierForm">
+            <MdDone size={24} />
             SAVE
-          </button>
+          </SaveButton>
         </ButtonsContainer>
       </HeaderContainer>
       <RegFormContainer>

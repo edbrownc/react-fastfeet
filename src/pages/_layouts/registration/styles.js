@@ -24,23 +24,40 @@ export const HeaderContainer = styled.div`
 `;
 
 export const ButtonsContainer = styled.div`
-  button {
-    height: 36px;
-    width: 112px;
-    border-radius: 4px;
-    border: none;
-    font-weight: bold;
-    margin-left: 10px;
-  }
-  .saveBtn {
-    background: #7d40e7 0% 0% no-repeat padding-box;
-    color: #fff;
-  }
+  display: flex;
+  flex-direction: row;
+`;
 
-  .backBtn {
-    background: #ccc 0% 0% no-repeat padding-box;
-    color: #fff;
-  }
+export const BackButton = styled.button`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  height: 36px;
+  width: 112px;
+  border-radius: 4px;
+  border: none;
+  font-weight: bold;
+  margin-left: 10px;
+  background: #ccc;
+  color: #fff;
+  padding-right: 7px;
+`;
+
+export const SaveButton = styled.button`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  height: 36px;
+  width: 112px;
+  border-radius: 4px;
+  border: none;
+  font-weight: bold;
+  margin-left: 10px;
+  background: #7d40e7;
+  color: #fff;
+  padding-right: 7px;
 `;
 
 export const RegContainer = styled.div`

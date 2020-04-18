@@ -34,6 +34,8 @@ export default function Orders() {
     async function loadOrders() {
       const res = await api.get('/orders');
 
+      console.tron.log(res);
+
       setOrders(res.data);
     }
 
@@ -54,6 +56,12 @@ export default function Orders() {
           label: `${product}`,
           value: `${product}`,
         }));
+
+        // Add empty option
+        options.unshift({
+          label: ``,
+          value: ``,
+        });
 
         callback(options);
       });
