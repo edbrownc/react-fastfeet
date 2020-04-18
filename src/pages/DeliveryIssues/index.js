@@ -11,51 +11,51 @@ import {
   Pagination,
 } from '~/pages/_layouts/default/styles';
 import api from '~/services/api';
-import ViewProblem from './ViewProblem';
+import ViewIssue from './ViewIssue';
 
-export default function DeliveryProblems() {
-  const [problems, setProblems] = useState([]);
+export default function DeliveryIssues() {
+  const [issues, setIssues] = useState([]);
   const [anchorActions, setAnchorActions] = useState(null);
   const [page, setPage] = useState(1);
-  const [selectedProblem, setSelectedProblem] = useState('');
-  const [viewProblem, setViewProblem] = useState(false);
+  const [selectedIssue, setSelectedIssue] = useState('');
+  const [viewIssue, setViewIssue] = useState(false);
   const open = Boolean(anchorActions);
 
-  // Load all problems first time loading the page
+  // Load all issues first time loading the page
   useEffect(() => {
-    async function loadProblems() {
+    async function loadIssues() {
       const res = await api.get('/orders/issues');
 
-      setProblems(res.data);
+      setIssues(res.data);
     }
 
-    loadProblems();
+    loadIssues();
   }, []);
 
   // Actions menu functions
-  function handleClickActions(event, problem) {
+  function handleClickActions(event, Issue) {
     setAnchorActions(event.currentTarget);
-    setSelectedProblem(problem);
+    setSelectedIssue(Issue);
   }
 
   function handleCloseActions() {
     setAnchorActions(null);
   }
 
-  async function handleCancelProblem() {
+  async function handleCancelIssue() {
     setAnchorActions(null);
 
     const res = window.confirm('Are you sure you want cancel this order?');
 
     if (res === true) {
       try {
-        await api.delete(`/orders/${selectedProblem.order_id}/cancel-delivery`);
+        await api.delete(`/orders/${selectedIssue.order_id}/cancel-delivery`);
 
-        const problemCanceledArray = problems.filter(
-          problem => problem !== selectedProblem
+        const issueCanceledArray = issues.filter(
+          Issue => Issue !== selectedIssue
         );
 
-        setProblems(problemCanceledArray);
+        setIssues(issueCanceledArray);
 
         toast.success('Delivery canceled successfuly.');
       } catch (error) {
@@ -66,56 +66,56 @@ export default function DeliveryProblems() {
     }
   }
 
-  function handleViewProblem() {
+  function handleViewIssue() {
     setAnchorActions(null);
-    setViewProblem(true);
+    setViewIssue(true);
   }
 
   // Pagination functions
   useEffect(() => {
-    async function updateProblemsPage() {
+    async function updateIssuesPage() {
       const res = await api.get('/orders/issues');
 
-      setProblems(res.data);
+      setIssues(res.data);
     }
 
-    updateProblemsPage();
+    updateIssuesPage();
   }, [page]);
 
   function handlePagination(action) {
     setPage(action === 'next' ? page + 1 : page - 1);
   }
 
-  // View Problem functions
+  // View Issue functions
   function handleClickBackground() {
-    setViewProblem(false);
+    setViewIssue(false);
   }
 
   return (
     <>
       <header>
-        <strong>Delivery problems</strong>
+        <strong>Delivery issues</strong>
       </header>
 
       <StyledTable>
         <thead>
           <tr>
             <th>Delivery ID</th>
-            <th>Problem description</th>
+            <th>Issue description</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {problems.map(problem => (
-            <tr key={problem.id}>
-              <td>#{problem.order_id}</td>
-              <td>{problem.description}</td>
+          {issues.map(Issue => (
+            <tr key={Issue.id}>
+              <td>#{Issue.order_id}</td>
+              <td>{Issue.description}</td>
               <td>
                 <IconButton
                   aria-label="more"
                   aria-controls="long-menu"
                   aria-haspopup="true"
-                  onClick={e => handleClickActions(e, problem)}
+                  onClick={e => handleClickActions(e, Issue)}
                 >
                   <MdMoreHoriz />
                 </IconButton>
@@ -132,11 +132,11 @@ export default function DeliveryProblems() {
             anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
             transformOrigin={{ vertical: 'top', horizontal: 'center' }}
           >
-            <StyledMenuItem key="view" onClick={handleViewProblem}>
+            <StyledMenuItem key="view" onClick={handleViewIssue}>
               <PurpleViewIcon /> <span>View</span>
             </StyledMenuItem>
             <Divider variant="middle" />
-            <StyledMenuItem key="cancel" onClick={handleCancelProblem}>
+            <StyledMenuItem key="cancel" onClick={handleCancelIssue}>
               <RedDeleteIcon /> <span>Cancel order</span>
             </StyledMenuItem>
           </Menu>
@@ -155,14 +155,14 @@ export default function DeliveryProblems() {
         <button
           type="button"
           onClick={() => handlePagination('next')}
-          disabled={problems.length < 20}
+          disabled={issues.length < 20}
         >
           Next
         </button>
       </Pagination>
-      {viewProblem ? (
-        <ViewProblem
-          problem={selectedProblem}
+      {viewIssue ? (
+        <ViewIssue
+          Issue={selectedIssue}
           handleClickBackground={handleClickBackground}
         />
       ) : null}

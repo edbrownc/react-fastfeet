@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { Background, Container, Content } from './styles';
 
-export default function ViewProblem({ problem, handleClickBackground }) {
+export default function ViewIssue({ Issue, handleClickBackground }) {
   function handleContainerClick(event) {
     event.stopPropagation();
   }
@@ -12,15 +12,15 @@ export default function ViewProblem({ problem, handleClickBackground }) {
     <Background onClick={handleClickBackground}>
       <Container onClick={handleContainerClick}>
         <Content>
-          <h1>Problem Info</h1>
-          <small>{problem.description}</small>
+          <h1>Issue Info</h1>
+          <small>{Issue.description}</small>
         </Content>
       </Container>
     </Background>
   );
 }
 
-ViewProblem.propTypes = {
-  problem: PropTypes.string.isRequired,
+ViewIssue.propTypes = {
+  Issue: PropTypes.string.isRequired,
   handleClickBackground: PropTypes.func.isRequired,
 };
